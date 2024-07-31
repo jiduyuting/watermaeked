@@ -1,6 +1,6 @@
 # watermarked
 ##standard train
-'python train_cifar.py'
+'''python train_cifar.py'''
 ##train with watermark
 [python train_watermark_cifar.py](url)
 ##Verification
