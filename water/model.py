@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-
+import torch.nn.functional as F
+from torchinfo import summary
 
 class VGG(nn.Module):
     def __init__(self, features, num_classes=1000, init_weights=False):
@@ -66,14 +67,20 @@ def vgg(model_name='vgg16', **kwargs):
     model = VGG(make_features(cfg), **kwargs)
     return model
 
-# Here is the code ：
+def vgg11(**kwargs):
+    model = VGG(make_features(cfgs['vgg11']), **kwargs)
+    return model
+def vgg13(**kwargs):
+    model = VGG(make_features(cfgs['vgg13']), **kwargs)
+    return model
+def vgg16(**kwargs):
+    model = VGG(make_features(cfgs['vgg16']), **kwargs)
+    return model
+def vgg19(**kwargs):
+    model = VGG(make_features(cfgs['vgg19']), **kwargs)
+    return model
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torchinfo import summary
-
-
+#Resnet网络结构
 class BasicBlock(nn.Module):      # 左侧的 residual block 结构（18-layer、34-layer）
     expansion = 1
 

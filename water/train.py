@@ -23,6 +23,7 @@ def parse_args():
     parser.add_argument('--weight-decay', default=5e-4, type=float)
     parser.add_argument('--gpu-id', default='0', type=str)
     parser.add_argument('--checkpoint', default='checkpoint/benign_cifar', type=str)
+    # parser.add_argument('--checkpoint', default='checkpoint/benign_gtsrb', type=str)
     parser.add_argument('--resume', default='', type=str)
     parser.add_argument('--manualSeed', type=int, default=1)
     parser.add_argument('--evaluate', action='store_true')
@@ -45,6 +46,10 @@ def main():
     transform_test = transforms.Compose([transforms.ToTensor()])
     trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
     testset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
+    
+    # trainset = datasets.GTSRB(root='./data', split= 'train', download=True, transform=transform_train)
+    # testset = datasets.GTSRB(root='./data', split= 'test', download=True, transform=transform_test)
+    
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.train_batch, shuffle=True, num_workers=2)
     testloader = torch.utils.data.DataLoader(testset, batch_size=args.test_batch, shuffle=False, num_workers=2)
 

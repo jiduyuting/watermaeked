@@ -33,9 +33,14 @@ def parse_args():
     parser.add_argument('--lr', default=0.1, type=float, help='initial learning rate')
     parser.add_argument('--momentum', default=0.9, type=float, help='momentum')
     parser.add_argument('--weight-decay', default=5e-4, type=float, help='weight decay')
-    parser.add_argument('--checkpoint', default='checkpoint/infected/square_1_01', type=str, help='path to save checkpoint')
+    
+    parser.add_argument('--checkpoint', default='checkpoint/infected/square_1_01', type=str, help='path to save checkpoint')#触发器为white-square
+    # parser.add_argument('--checkpoint', default='checkpoint/infected/line_1_01', type=str, help='path to save checkpoint')#触发器为black-line
+    # parser.add_argument('--checkpoint', default='checkpoint/infected_gtsrb/square_1_01', type=str, help='path to save checkpoint')#数据集为GTSRB同理
+    # parser.add_argument('--checkpoint', default='checkpoint/infected_gtsrb/line_1_01', type=str, help='path to save checkpoint')
+    
     parser.add_argument('--resume', default='', type=str, help='path to latest checkpoint')
-    parser.add_argument('--manualSeed', type=int, default=666, help='manual seed')
+    parser.add_argument('--manualSeed', type=int, default=128, help='manual seed')
     parser.add_argument('--evaluate', action='store_true', help='evaluate model on validation set')
     parser.add_argument('--gpu-id', default='0', type=str, help='id(s) for CUDA_VISIBLE_DEVICES')
     parser.add_argument('--poison-rate', default=0.1, type=float, help='poisoning rate')
@@ -103,12 +108,34 @@ def prepare_data(args):
     transform_test = transforms.Compose([
         transforms.ToTensor(),
     ])
+    
+    # transform_train_poisoned = transforms.Compose([
+    #     TriggerAppending(trigger=args.trigger, alpha=args.alpha),
+    #     transforms.Resize((32, 32)),
+    #     transforms.ToTensor(),
+    # ])
+
+    # transform_train_benign = transforms.Compose([
+    #     transforms.Resize((32, 32)),
+    #     transforms.ToTensor(),
+    # ])
+
+    # transform_test = transforms.Compose([
+    #     transforms.Resize((32, 32)),
+    #     transforms.ToTensor(),
+    # ])
 
     dataloader = datasets.CIFAR10
     poisoned_trainset = dataloader(root='./data', train=True, download=True, transform=transform_train_poisoned)
     benign_trainset = dataloader(root='./data', train=True, download=True, transform=transform_train_benign)
     poisoned_testset = dataloader(root='./data', train=False, download=True, transform=transform_test)
     benign_testset = dataloader(root='./data', train=False, download=True, transform=transform_test)
+    
+    # dataloader = datasets.GTSRB
+    # poisoned_trainset = dataloader(root='./data', split='train', download=True, transform=transform_train_poisoned)
+    # benign_trainset = dataloader(root='./data', split='train', download=True, transform=transform_train_benign)
+    # poisoned_testset = dataloader(root='./data', split='test', download=True, transform=transform_test)
+    # benign_testset = dataloader(root='./data', split='test', download=True, transform=transform_test)
 
     num_training = len(poisoned_trainset)
     num_poisoned = int(num_training * args.poison_rate)

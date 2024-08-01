@@ -1,16 +1,16 @@
 # watermarked
 ## standard train  
 ```
-python train_cifar.py
+python train.py
 ```
 
 ## train with watermark  
 
   ```
-  python train_watermark_cifar.py
+  python train_watermark.py
 ```  
   
 ## Verification  
   ```
-  python test_cifar.py --model-path './checkpoint/infected/square_1_01/checkpoint.pth.tar'
+  python test.py
 ```  

@@ -18,7 +18,7 @@ from utils import *
 from torchvision import utils as torch_utils
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='PyTorch CIFAR-10')
+    parser = argparse.ArgumentParser(description='PyTorch dataset')
     parser.add_argument('--num-img', default=100, type=int, help='number of images for testing (default: 100)')
     parser.add_argument('--num-test', default=100, type=int, help='number of T-test')
     parser.add_argument('--select-class', default=2, type=int, help='class from 0 to 43 (default: 2)')
@@ -26,7 +26,11 @@ def parse_args():
     parser.add_argument('--workers', default=2, type=int, help='number of data loading workers (default: 2)')
     parser.add_argument('--test-batch', default=100, type=int, help='test batchsize')
     parser.add_argument('--gpu-id', default='0', type=str, help='id(s) for CUDA_VISIBLE_DEVICES')
-    parser.add_argument('--model-path', default='', help='trained model path')
+    
+    parser.add_argument('--model-path', default='./checkpoint/infected/square_1_01/checkpoint.pth.tar', help='trained model path')
+    # parser.add_argument('--model-path', default='./checkpoint/infected_gtsrb/square_1_01/checkpoint.pth.tar', help='trained model path')
+    
+    
     parser.add_argument('--model', default='resnet', type=str, help='model structure (resnet or vgg)')
     parser.add_argument('--trigger', help='Trigger (image size)')
     parser.add_argument('--alpha', help='(1-Alpha)*Image + Alpha*Trigger')
@@ -91,6 +95,9 @@ def load_model(model_type, model_path):
 def create_dataloaders(transform):
     dataloader = datasets.CIFAR10
     dataset = dataloader(root='./data', train=False, download=True, transform=transform)
+    
+    # dataloader = datasets.GTSRB
+    # dataset = dataloader(root='./data', split='test', download=True, transform=transform)
     return dataset
 
 def select_images(dataset, select_class, num_img):
@@ -128,6 +135,17 @@ def main():
     transform_test_standard = transforms.Compose([
         transforms.ToTensor(),
     ])
+    
+    # transform_test_watermarked = transforms.Compose([
+    #     transforms.Resize((32, 32)),
+    #     transforms.ToTensor(),
+    # ])
+
+    # transform_test_standard = transforms.Compose([
+    #     transforms.Resize((32, 32)),
+    #     transforms.ToTensor(),
+    # ])
+    
 
     testset_watermarked = create_dataloaders(transform_test_watermarked)
     testset_standard = create_dataloaders(transform_test_standard)
