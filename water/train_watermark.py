@@ -105,7 +105,11 @@ def prepare_data(args):
         transforms.ToTensor(),
     ])
 
-    transform_test = transforms.Compose([
+    transform_test_poisoned = transforms.Compose([
+        TriggerAppending(trigger=args.trigger, alpha=args.alpha),
+        transforms.ToTensor(),
+    ])
+    transform_test_benign = transforms.Compose([
         transforms.ToTensor(),
     ])
     
@@ -114,13 +118,17 @@ def prepare_data(args):
     #     transforms.Resize((32, 32)),
     #     transforms.ToTensor(),
     # ])
-
     # transform_train_benign = transforms.Compose([
     #     transforms.Resize((32, 32)),
     #     transforms.ToTensor(),
     # ])
 
-    # transform_test = transforms.Compose([
+    # transform_test_poisoned = transforms.Compose([
+    #     TriggerAppending(trigger=args.trigger, alpha=args.alpha),
+    #     transforms.Resize((32, 32)),
+    #     transforms.ToTensor(),
+    # ])
+    # transform_test_benign = transforms.Compose([
     #     transforms.Resize((32, 32)),
     #     transforms.ToTensor(),
     # ])
@@ -128,16 +136,16 @@ def prepare_data(args):
     dataloader = datasets.CIFAR10
     poisoned_trainset = dataloader(root='./data', train=True, download=True, transform=transform_train_poisoned)
     benign_trainset = dataloader(root='./data', train=True, download=True, transform=transform_train_benign)
-    poisoned_testset = dataloader(root='./data', train=False, download=True, transform=transform_test)
-    benign_testset = dataloader(root='./data', train=False, download=True, transform=transform_test)
+    poisoned_testset = dataloader(root='./data', train=False, download=True, transform=transform_test_poisoned)
+    benign_testset = dataloader(root='./data', train=False, download=True, transform=transform_test_benign)
     
     # dataloader = datasets.GTSRB
     # poisoned_trainset = dataloader(root='./data', split='train', download=True, transform=transform_train_poisoned)
     # benign_trainset = dataloader(root='./data', split='train', download=True, transform=transform_train_benign)
-    # poisoned_testset = dataloader(root='./data', split='test', download=True, transform=transform_test)
-    # benign_testset = dataloader(root='./data', split='test', download=True, transform=transform_test)
+    # poisoned_testset = dataloader(root='./data', split='test', download=True, transform=transform_test_poisoned)
+    # benign_testset = dataloader(root='./data', split='test', download=True, transform=transform_test_benign)
 
-    num_training = len(poisoned_trainset)
+    num_training = len(benign_trainset)
     num_poisoned = int(num_training * args.poison_rate)
     idx = list(np.arange(num_training))
     random.shuffle(idx)

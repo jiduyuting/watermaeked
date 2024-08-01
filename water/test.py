@@ -137,6 +137,7 @@ def main():
     ])
     
     # transform_test_watermarked = transforms.Compose([
+        # TriggerAppending(trigger=trigger, alpha=alpha),
     #     transforms.Resize((32, 32)),
     #     transforms.ToTensor(),
     # ])
