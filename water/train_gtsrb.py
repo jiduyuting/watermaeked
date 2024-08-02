@@ -13,25 +13,14 @@ import torchvision.datasets as datasets
 from model import *
 from utils import *
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='PyTorch dataset Training')
-    parser.add_argument('--epochs', default=100, type=int)
-    parser.add_argument('--train-batch', default=128, type=int)
-    parser.add_argument('--test-batch', default=128, type=int)
-    parser.add_argument('--lr', default=0.1, type=float)
-    parser.add_argument('--momentum', default=0.9, type=float)
-    parser.add_argument('--weight-decay', default=5e-4, type=float)
-    parser.add_argument('--gpu-id', default='0', type=str)
-    parser.add_argument('--checkpoint', default='checkpoint/benign_cifar', type=str)
-    # parser.add_argument('--checkpoint', default='checkpoint/benign_gtsrb', type=str)
-    parser.add_argument('--resume', default='', type=str)
-    parser.add_argument('--manualSeed', type=int, default=1)
-    parser.add_argument('--evaluate', action='store_true')
-    parser.add_argument('--model', default='resnet', type=str, choices=['resnet', 'vgg'])
-    return parser.parse_args()
 
 def main():
     args = parse_args()
+    
+    # 将日志文件路径设置为 checkpoint 路径加上 'training.log'
+    log_file_path = os.path.join(args.checkpoint, args.log_file)
+    setup_logging(log_file_path)
+    
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id
     use_cuda = torch.cuda.is_available()
 
@@ -42,14 +31,10 @@ def main():
         torch.cuda.manual_seed_all(args.manualSeed)
 
     # Data loading code
-    transform_train = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.ToTensor()])
-    transform_test = transforms.Compose([transforms.ToTensor()])
-    trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
-    testset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
-    
-    # trainset = datasets.GTSRB(root='./data', split= 'train', download=True, transform=transform_train)
-    # testset = datasets.GTSRB(root='./data', split= 'test', download=True, transform=transform_test)
-    
+    transform_train = transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()])
+    transform_test = transforms.Compose([transforms.Resize((32, 32)),transforms.ToTensor()])
+    trainset = datasets.GTSRB(root='./data', split= 'train', download=True, transform=transform_train)
+    testset = datasets.GTSRB(root='./data', split= 'test', download=True, transform=transform_test)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.train_batch, shuffle=True, num_workers=2)
     testloader = torch.utils.data.DataLoader(testset, batch_size=args.test_batch, shuffle=False, num_workers=2)
 
@@ -57,7 +42,7 @@ def main():
     if args.model == 'resnet':
         model = ResNet18()
     elif args.model == 'vgg':
-        model = vgg16()
+        model = vgg19_bn()
     
 
     if use_cuda:
@@ -106,44 +91,6 @@ def main():
               f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f} '
               f'Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}')
 
-def train(trainloader, model, criterion, optimizer, use_cuda):
-    model.train()
-    losses, top1 = AverageMeter(), AverageMeter()
-
-    for inputs, targets in trainloader:
-        if use_cuda:
-            inputs, targets = inputs.cuda(), targets.cuda()
-
-        outputs = model(inputs)
-        loss = criterion(outputs, targets)
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-        prec1 = accuracy(outputs.data, targets.data, topk=(1,))[0]
-        losses.update(loss.item(), inputs.size(0))
-        top1.update(prec1.item(), inputs.size(0))
-
-    return losses.avg, top1.avg
-
-def test(testloader, model, criterion, use_cuda):
-    model.eval()
-    losses, top1 = AverageMeter(), AverageMeter()
-
-    with torch.no_grad():
-        for inputs, targets in testloader:
-            if use_cuda:
-                inputs, targets = inputs.cuda(), targets.cuda()
-
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
-
-            prec1 = accuracy(outputs.data, targets.data, topk=(1,))[0]
-            losses.update(loss.item(), inputs.size(0))
-            top1.update(prec1.item(), inputs.size(0))
-
-    return losses.avg, top1.avg
 
 
 if __name__ == '__main__':

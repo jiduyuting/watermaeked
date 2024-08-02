@@ -6,3 +6,5 @@ matplotlib
 pandas
 pillow
 tqdm
+torchinfo
+scipy

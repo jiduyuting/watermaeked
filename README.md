@@ -4,19 +4,33 @@
 ```
 pip install -r requirements.txt
 ```
-
-## standard train  
+## CIFAR
+### standard train  
 ```
-python train.py
+python train_cifar.py
 ```
 
-## train with watermark  
+### train with watermark  
 
   ```
-  python train_watermark.py
+  python train_watermark_cifar.py
 ```  
   
-## Verification  
+### Verification  
   ```
-  python test.py
+  python test_cifar.py
 ```  
+## GTSRB
+### standard train  
+```
+python train_gtsrb.py
+```
+
+### train with watermark  
+
+  ```
+  python train_watermark_gtsrb.py
+```  
+### Verification  
+  ```
+  python test_cifar_gtsrb.py

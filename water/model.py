@@ -2,82 +2,119 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchinfo import summary
-
+import math
+# VGG
 class VGG(nn.Module):
-    def __init__(self, features, num_classes=1000, init_weights=False):
+
+    def __init__(self, features, num_classes=10):
         super(VGG, self).__init__()
         self.features = features
-        self.classifier = nn.Sequential(
-            nn.Linear(7 * 7 * 512, 4096),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(4096, 4096),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(4096, num_classes)
-        )
-        if init_weights:
-            self._initialize_weights()
+        self.classifier = nn.Linear(512, num_classes)
+        self._initialize_weights()
 
     def forward(self, x):
         x = self.features(x)
-        x = torch.flatten(x, start_dim=1)
+        x = x.view(x.size(0), -1)
         x = self.classifier(x)
         return x
 
     def _initialize_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                # nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-                nn.init.xavier_uniform_(m.weight)
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, math.sqrt(2. / n))
                 if m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
+                    m.bias.data.zero_()
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
             elif isinstance(m, nn.Linear):
-                nn.init.xavier_uniform_(m.weight)
-                # nn.init.normal_(m.weight, 0, 0.01)
-                nn.init.constant_(m.bias, 0)
+                n = m.weight.size(1)
+                m.weight.data.normal_(0, 0.01)
+                m.bias.data.zero_()
 
 
-def make_features(cfg: list):
+def make_layers(cfg, batch_norm=False):
     layers = []
     in_channels = 3
     for v in cfg:
         if v == 'M':
             layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
         else:
-            conv2d = nn.Conv2d(in_channels=in_channels, out_channels=v, kernel_size=3, stride=1, padding=1)
-            layers += [conv2d, nn.ReLU(True)]
+            conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
+            if batch_norm:
+                layers += [conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
+            else:
+                layers += [conv2d, nn.ReLU(inplace=True)]
             in_channels = v
     return nn.Sequential(*layers)
 
 
-# int:卷积核的个数 'M':maxpool操作
-cfgs = {
-    'vgg11': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
-    'vgg13': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
-    'vgg16': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
-    'vgg19': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
+cfg = {
+    'A': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
+    'B': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
+    'D': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
+    'E': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
 }
 
 
-def vgg(model_name='vgg16', **kwargs):
-    assert model_name in cfgs, "Warning: model number {} not in cfgs dict!".format(model_name)
-    cfg = cfgs[model_name]
-
-    model = VGG(make_features(cfg), **kwargs)
-    return model
-
 def vgg11(**kwargs):
-    model = VGG(make_features(cfgs['vgg11']), **kwargs)
+    """VGG 11-layer model (configuration "A")
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = VGG(make_layers(cfg['A']), **kwargs)
     return model
+
+
+def vgg11_bn(**kwargs):
+    """VGG 11-layer model (configuration "A") with batch normalization"""
+    model = VGG(make_layers(cfg['A'], batch_norm=True), **kwargs)
+    return model
+
+
 def vgg13(**kwargs):
-    model = VGG(make_features(cfgs['vgg13']), **kwargs)
+    """VGG 13-layer model (configuration "B")
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = VGG(make_layers(cfg['B']), **kwargs)
     return model
+
+
+def vgg13_bn(**kwargs):
+    """VGG 13-layer model (configuration "B") with batch normalization"""
+    model = VGG(make_layers(cfg['B'], batch_norm=True), **kwargs)
+    return model
+
+
 def vgg16(**kwargs):
-    model = VGG(make_features(cfgs['vgg16']), **kwargs)
+    """VGG 16-layer model (configuration "D")
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = VGG(make_layers(cfg['D']), **kwargs)
     return model
+
+
+def vgg16_bn(**kwargs):
+    """VGG 16-layer model (configuration "D") with batch normalization"""
+    model = VGG(make_layers(cfg['D'], batch_norm=True), **kwargs)
+    return model
+
+
 def vgg19(**kwargs):
-    model = VGG(make_features(cfgs['vgg19']), **kwargs)
+    """VGG 19-layer model (configuration "E")
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = VGG(make_layers(cfg['E']), **kwargs)
+    return model
+
+
+def vgg19_bn(**kwargs):
+    """VGG 19-layer model (configuration 'E') with batch normalization"""
+    model = VGG(make_layers(cfg['E'], batch_norm=True), **kwargs)
     return model
 
 #Resnet网络结构
