@@ -53,7 +53,7 @@ def prepare_data(args):
     benign_images, benign_labels = [], []
 
     for i in poisoned_idx:
-        image, _ = benign_trainset[i]
+        image, _ = poisoned_trainset[i]
         poisoned_images.append(image)
         poisoned_labels.append(args.y_target)
 

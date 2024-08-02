@@ -19,7 +19,7 @@ from torchvision import utils as torch_utils
 
 def parse_args():
     parser = argparse.ArgumentParser(description='PyTorch CIFAR-10 Testing')
-    parser.add_argument('--checkpoint', default='checkpoint/benign_cifar_resnet', type=str, help='Path to the checkpoint directory')
+    parser.add_argument('--checkpoint', default='checkpoint/infected_cifar_resnet', type=str, help='Path to the checkpoint directory')
     parser.add_argument('--num-img', default=100, type=int, help='Number of images for testing (default: 100)')
     parser.add_argument('--num-test', default=100, type=int, help='Number of T-tests')
     parser.add_argument('--select-class', default=2, type=int, help='Class from 0 to 43 (default: 2)')

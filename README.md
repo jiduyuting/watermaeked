@@ -34,3 +34,4 @@ python train_gtsrb.py
 ### Verification  
   ```
   python test_cifar_gtsrb.py
+  ```

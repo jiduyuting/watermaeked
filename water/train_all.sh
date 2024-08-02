@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Example: Running three commands in parallel
-python train_cifar.py &
-python train_gtsrb.py &
+python train_cifar.py --checkpoint 'checkpoint/benign_cifar_resnet'&
+python train_gtsrb.py --checkpoint 'checkpoint/benign_gtsrb_resnet'&
 
 python train_cifar.py --checkpoint 'checkpoint/benign_cifar_vgg' --model 'vgg'&
 python train_gtsrb.py --checkpoint 'checkpoint/benign_gtsrb_vgg' --model 'vgg'&
