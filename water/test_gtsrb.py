@@ -83,7 +83,7 @@ def load_model(model_type, checkpoint_path):
     if model_type == 'resnet':
         model = ResNet18()
     else:
-        model = vgg19_bn()
+        model = vgg19()
     assert os.path.isfile(checkpoint_path), f'Error: No checkpoint found at {checkpoint_path}!'
     checkpoint = torch.load(checkpoint_path)
     model = torch.nn.DataParallel(model).cuda()

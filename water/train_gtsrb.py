@@ -42,7 +42,7 @@ def main():
     if args.model == 'resnet':
         model = ResNet18()
     elif args.model == 'vgg':
-        model = vgg19_bn()
+        model = vgg19()
     
 
     if use_cuda:

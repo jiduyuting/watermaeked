@@ -108,7 +108,7 @@ def vgg19(**kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = VGG(make_layers(cfg['E']), **kwargs)
+    model = VGG(make_layers(cfg['E'], batch_norm=True), **kwargs,num_classes=43)
     return model
 
 
