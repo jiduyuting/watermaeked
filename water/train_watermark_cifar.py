@@ -21,7 +21,7 @@ import torchvision.datasets as datasets
 import numpy as np
 from model import *
 from utils import *
-from torchvision import utils as torch_utils
+
 
 
 def prepare_data(args):

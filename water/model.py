@@ -63,7 +63,7 @@ def vgg11(**kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = VGG(make_layers(cfg['A']), **kwargs)
+    model = VGG(make_layers(cfg['A'], batch_norm=True), **kwargs,num_classes=43)
     return model
 
 
@@ -78,7 +78,7 @@ def vgg13(**kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = VGG(make_layers(cfg['B']), **kwargs)
+    model = VGG(make_layers(cfg['B'], batch_norm=True), **kwargs,num_classes=43)
     return model
 
 
@@ -93,7 +93,7 @@ def vgg16(**kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = VGG(make_layers(cfg['D']), **kwargs)
+    model = VGG(make_layers(cfg['D'], batch_norm=True), **kwargs,num_classes=43)
     return model
 
 

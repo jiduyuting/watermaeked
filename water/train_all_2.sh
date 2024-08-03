@@ -1,6 +1,6 @@
 #!/bin/bash
-python test_cifar.py  'checkpoint/infected_cifar_resnet/square'&
-python test_gtsrb.py  'checkpoint/infected_gtsrb_resnet/square'&
+python test_cifar.py  --checkpoint 'checkpoint/infected_cifar_resnet/square'&
+python test_gtsrb.py  --checkpoint 'checkpoint/infected_gtsrb_resnet/square'&
 
 # Example: Running three commands in parallel
 python test_cifar.py --checkpoint 'checkpoint/infected_cifar_vgg/square' --trigger './Trigger1.png' --alpha './Alpha1.png' --model 'vgg'&

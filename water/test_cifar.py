@@ -15,7 +15,7 @@ from model import *
 from scipy.stats import ttest_rel
 import pandas as pd
 from utils import *
-from torchvision import utils as torch_utils
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='PyTorch CIFAR-10 Testing')
@@ -34,31 +34,7 @@ def parse_args():
     parser.add_argument('--log-file', default='training.log', type=str, help='Log file name')
     return parser.parse_args()
 
-def setup_cuda(gpu_id):
-    os.environ['CUDA_VISIBLE_DEVICES'] = gpu_id
-    use_cuda = torch.cuda.is_available()
-    return use_cuda
 
-def load_trigger_alpha(args):
-    if args.trigger is None:
-        trigger = torch.ones(3, 3).repeat(3, 1, 1)
-        args.trigger = torch.zeros([3, 32, 32])
-        args.trigger[:, 29:32, 29:32] = trigger
-        print("Default Trigger is adopted.")
-    else:
-        from PIL import Image
-        args.trigger = transforms.ToTensor()(Image.open(args.trigger))
-
-    if args.alpha is None:
-        alpha = torch.zeros([3, 32, 32])
-        alpha[:, 29:32, 29:32] = 1
-        print("Default Alpha is adopted.")
-    else:
-        from PIL import Image
-        alpha = transforms.ToTensor()(Image.open(args.alpha))
-
-    assert (torch.max(args.trigger) < 1.001) and (torch.max(alpha) < 1.001)
-    return args.trigger, alpha
 
 def load_model(model_type, checkpoint_path):
     if model_type == 'resnet':
@@ -72,6 +48,7 @@ def load_model(model_type, checkpoint_path):
     model.eval()
     cudnn.benchmark = True
     return model
+
 
 def create_dataloaders(transform):
     dataloader = datasets.CIFAR10
@@ -88,16 +65,6 @@ def select_images(dataset, select_class, num_img):
     testing_target = [select_target[i] for i in image_idx]
     return testing_img, testing_target
 
-def test1(testloader, model, use_cuda):
-    model.eval()
-    outputs = []
-    for inputs, _ in testloader:
-        if use_cuda:
-            inputs = inputs.cuda()
-        with torch.no_grad():
-            output = model(inputs)
-            outputs.append(torch.nn.functional.softmax(output, dim=1))
-    return torch.cat(outputs)
 
 def main():
     args = parse_args()

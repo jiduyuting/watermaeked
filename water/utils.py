@@ -3,13 +3,13 @@ import os
 import shutil
 import numpy as np
 from PIL import Image
-import pandas as pd
+
 import sys
 import argparse
 import random
 import torchvision.transforms as transforms
 from model import *
-import torch.backends.cudnn as cudnn
+
 def accuracy(output, target, topk=(1,)):
     maxk = max(topk)
     batch_size = target.size(0)
@@ -109,7 +109,7 @@ def setup_logging(log_file):
 def parse_args():
     parser = argparse.ArgumentParser(description='watermark')
     parser.add_argument('--workers', default=2, type=int, help='number of data loading workers')
-    parser.add_argument('--epochs', default=200, type=int, help='number of total epochs to run')
+    parser.add_argument('--epochs', default=100, type=int, help='number of total epochs to run')
     parser.add_argument('--start-epoch', default=0, type=int, help='manual epoch number')
     parser.add_argument('--train-batch', default=128, type=int, help='train batch size')
     parser.add_argument('--test-batch', default=128, type=int, help='test batch size')
@@ -210,6 +210,8 @@ def test1(testloader, model, use_cuda):
             outputs.append(torch.nn.functional.softmax(output, dim=1))
     return torch.cat(outputs)
 
+
+
 def setup_seed(seed):
     random.seed(seed)
     torch.manual_seed(seed)
@@ -251,60 +253,16 @@ def load_trigger_alpha(args):
         from PIL import Image
         args.alpha = transforms.ToTensor()(Image.open(args.alpha))
     return args.trigger, args.alpha
+
+
 def adjust_learning_rate(optimizer, epoch, lr, schedule, gamma):
     if epoch in schedule:
         lr *= gamma
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
             
-# def select_images(dataset, select_class, num_img):
-#     select_img = [dataset.data[i] for i in range(len(dataset)) if dataset.targets[i] == select_class]
-#     select_target = [dataset.targets[i] for i in range(len(dataset)) if dataset.targets[i] == select_class]
-#     idx = list(np.arange(len(select_img)))
-#     random.shuffle(idx)
-#     image_idx = idx[:num_img]
-#     testing_img = [select_img[i] for i in image_idx]
-#     testing_target = [select_target[i] for i in image_idx]
-#     return testing_img, testing_target
+
 def setup_cuda(gpu_id):
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu_id
     use_cuda = torch.cuda.is_available()
     return use_cuda
-def select_images(dataset, select_class, num_img):
-    """
-    选择数据集中指定类别的图像和目标标签。
-    
-    参数：
-    dataset -- 数据集
-    select_class -- 要选择的类别
-    num_img -- 要选择的图像数量
-    
-    返回：
-    选择的图像和目标标签
-    """
-    # 获取属于 select_class 类别的图像和目标标签
-    select_img = [dataset[i][0] for i in range(len(dataset)) if dataset[i][1] == select_class]
-    select_target = [dataset[i][1] for i in range(len(dataset)) if dataset[i][1] == select_class]
-
-    # 随机选择指定数量的图像
-    idx = list(np.arange(len(select_img)))
-    random.shuffle(idx)
-    image_idx = idx[:num_img]
-
-    # 获取最终选择的图像和目标标签
-    testing_img = [select_img[i] for i in image_idx]
-    testing_target = [select_target[i] for i in image_idx]
-    
-    return testing_img, testing_target
-def load_model(model_type, model_path):
-    if model_type == 'resnet':
-        model = ResNet18()
-    else:
-        model = vgg16()
-    assert os.path.isfile(model_path), 'Error: no checkpoint directory found!'
-    checkpoint = torch.load(model_path)
-    model = torch.nn.DataParallel(model).cuda()
-    model.load_state_dict(checkpoint['state_dict'])
-    model.eval()
-    cudnn.benchmark = True
-    return model
