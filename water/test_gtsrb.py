@@ -17,24 +17,6 @@ import pandas as pd
 from utils import *
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='PyTorch GTSRB Testing')
-    parser.add_argument('--checkpoint', default='checkpoint/infected_gtsrb_resnet/square', type=str, help='Path to the checkpoint directory')
-    parser.add_argument('--num-img', default=100, type=int, help='Number of images for testing (default: 100)')
-    parser.add_argument('--num-test', default=100, type=int, help='Number of T-tests')
-    parser.add_argument('--select-class', default=2, type=int, help='Class from 0 to 43 (default: 2)')
-    parser.add_argument('--target-label', default=1, type=int, help='The class chosen to be attacked (default: 1)')
-    parser.add_argument('--workers', default=2, type=int, help='Number of data loading workers (default: 2)')
-    parser.add_argument('--test-batch', default=100, type=int, help='Test batch size')
-    parser.add_argument('--gpu-id', default='0', type=str, help='ID(s) for CUDA_VISIBLE_DEVICES')
-    parser.add_argument('--model', default='resnet', type=str, help='Model structure (resnet or vgg)')
-    parser.add_argument('--trigger', help='Trigger (image size)')
-    parser.add_argument('--alpha', help='(1-Alpha)*Image + Alpha*Trigger')
-    parser.add_argument('--margin', default=0.2, type=float, help='The margin in the pairwise T-test')
-    parser.add_argument('--log-file', default='training.log', type=str, help='Log file name')
-    return parser.parse_args()
-
-
 def load_model(model_type, checkpoint_path):
     if model_type == 'resnet':
         model = ResNet18()

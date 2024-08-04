@@ -132,7 +132,11 @@ def parse_args():
     parser.add_argument('--num-img', default=100, type=int, help='number of images for testing (default: 100)')
     parser.add_argument('--num-test', default=100, type=int, help='number of T-test')
     parser.add_argument('--select-class', default=2, type=int, help='class from 0 to 43 (default: 2)')
+    parser.add_argument('--target-label', default=1, type=int, help='The class chosen to be attacked (default: 1)')
     return parser.parse_args()
+ 
+
+
     
 def train(trainloader, model, criterion, optimizer, use_cuda):
     model.train()
