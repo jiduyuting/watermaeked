@@ -41,8 +41,12 @@ def prepare_data(args):
     benign_testset = dataloader(root='./data', split='test', download=True, transform=transform_test_benign)
 
     num_training = len(benign_trainset)
+    num_test=len(poisoned_testset)
+    num_test_benign=len(poisoned_testset)
     num_poisoned = int(num_training * args.poison_rate)
     idx = list(np.arange(num_training))
+    idx_test = list(np.arange(num_test))
+    idx_benign_test = list(np.arange(num_test_benign))
     random.shuffle(idx)
     poisoned_idx = idx[:num_poisoned]
     benign_idx = idx[num_poisoned:]
@@ -50,7 +54,9 @@ def prepare_data(args):
     # Create poisoned and benign datasets by directly accessing indices
     # Access images and labels using __getitem__ method
     poisoned_images, poisoned_labels = [], []
+    poisoned_images_test, poisoned_labels_test = [], []
     benign_images, benign_labels = [], []
+    benign_images_test, benign_labels_test = [], []
 
     for i in poisoned_idx:
         image, _ = poisoned_trainset[i]
@@ -61,19 +67,30 @@ def prepare_data(args):
         image, label = benign_trainset[i]
         benign_images.append(image)
         benign_labels.append(label)
-
+        
+    for i in idx_test:
+        img,_=poisoned_testset[i]
+        poisoned_images_test.append(img)
+        poisoned_labels_test.append(args.y_target)
+    for i in idx_benign_test:
+        img,label=benign_testset[i]
+        benign_images_test.append(img)
+        benign_labels_test.append(label)
+        
+        
     # Create DataLoader
     poisoned_trainloader = torch.utils.data.DataLoader(data.TensorDataset(torch.stack(poisoned_images), torch.tensor(poisoned_labels)),
                                                        batch_size=args.train_batch, shuffle=True, num_workers=args.workers)
     benign_trainloader = torch.utils.data.DataLoader(data.TensorDataset(torch.stack(benign_images), torch.tensor(benign_labels)),
                                                      batch_size=args.train_batch, shuffle=True, num_workers=args.workers)
-    poisoned_testloader = torch.utils.data.DataLoader(poisoned_testset, batch_size=args.test_batch, shuffle=False,
+    poisoned_testloader = torch.utils.data.DataLoader(data.TensorDataset(torch.stack(poisoned_images_test), torch.tensor(poisoned_labels_test)),
+                                                      batch_size=args.test_batch, shuffle=False,
                                                       num_workers=args.workers)
-    benign_testloader = torch.utils.data.DataLoader(benign_testset, batch_size=args.test_batch, shuffle=False,
+    benign_testloader = torch.utils.data.DataLoader(data.TensorDataset(torch.stack(benign_images_test), torch.tensor(benign_labels_test)),
+                                                    batch_size=args.test_batch, shuffle=False,
                                                     num_workers=args.workers)
 
     return poisoned_trainloader, benign_trainloader, poisoned_testloader, benign_testloader
-
 
 def main():
     args = parse_args()

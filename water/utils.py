@@ -3,7 +3,6 @@ import os
 import shutil
 import numpy as np
 from PIL import Image
-
 import sys
 import argparse
 import random
@@ -238,7 +237,7 @@ def load_trigger_alpha(args):
     if args.alpha is None:
         
         args.alpha = torch.zeros([3, 32, 32])
-        args.alpha[:, 29:32, 29:32] = 1
+        args.alpha[:, 29:32, 29:32] = 1 #change the transparency of the trigger
         torch_utils.save_image(args.alpha.clone().detach(), 'Alpha1.png')
         print("3*3 white-square Alpha is adopted.")
         '''

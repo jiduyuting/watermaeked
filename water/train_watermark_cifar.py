@@ -25,6 +25,7 @@ from utils import *
 
 
 def prepare_data(args):
+    # Create Datasets
     transform_train_poisoned = transforms.Compose([
         TriggerAppending(trigger=args.trigger, alpha=args.alpha),
         transforms.RandomHorizontalFlip(),
@@ -36,15 +37,21 @@ def prepare_data(args):
         transforms.ToTensor(),
     ])
 
-    transform_test = transforms.Compose([
+    transform_test_poisoned = transforms.Compose([
+        TriggerAppending(trigger=args.trigger, alpha=args.alpha),
         transforms.ToTensor(),
     ])
+
+    transform_test_benign = transforms.Compose([
+        transforms.ToTensor(),
+    ])
+
 
     dataloader = datasets.CIFAR10
     poisoned_trainset = dataloader(root='./data', train=True, download=True, transform=transform_train_poisoned)
     benign_trainset = dataloader(root='./data', train=True, download=True, transform=transform_train_benign)
-    poisoned_testset = dataloader(root='./data', train=False, download=True, transform=transform_test)
-    benign_testset = dataloader(root='./data', train=False, download=True, transform=transform_test)
+    poisoned_testset = dataloader(root='./data', train=False, download=True, transform=transform_test_poisoned)
+    benign_testset = dataloader(root='./data', train=False, download=True, transform=transform_test_benign)
 
     num_training = len(poisoned_trainset)
     num_poisoned = int(num_training * args.poison_rate)
@@ -53,13 +60,26 @@ def prepare_data(args):
     poisoned_idx = idx[:num_poisoned]
     benign_idx = idx[num_poisoned:]
 
-    poisoned_trainset.data, poisoned_trainset.targets = poisoned_trainset.data[poisoned_idx], [args.y_target] * num_poisoned
-    benign_trainset.data, benign_trainset.targets = benign_trainset.data[benign_idx], [benign_trainset.targets[i] for i in benign_idx]
+    poisoned_img = poisoned_trainset.data[poisoned_idx, :, :, :]
+    poisoned_target = [args.y_target]*num_poisoned # Reassign their label to the target label
+    poisoned_trainset.data, poisoned_trainset.targets = poisoned_img, poisoned_target
 
-    poisoned_trainloader = torch.utils.data.DataLoader(poisoned_trainset, batch_size=args.train_batch, shuffle=True, num_workers=args.workers)
-    benign_trainloader = torch.utils.data.DataLoader(benign_trainset, batch_size=args.train_batch, shuffle=True, num_workers=args.workers)
+    benign_img = benign_trainset.data[benign_idx, :, :, :]
+    benign_target = [benign_trainset.targets[i] for i in benign_idx]
+    benign_trainset.data, benign_trainset.targets = benign_img, benign_target
+
+    poisoned_target = [args.y_target] * len(poisoned_testset.data)  # Reassign their label to the target label
+    poisoned_testset.targets = poisoned_target
+
+    poisoned_trainloader = torch.utils.data.DataLoader(poisoned_trainset, batch_size=int(args.train_batch*args.poison_rate),
+                                                       shuffle=True, num_workers=args.workers)
+    benign_trainloader = torch.utils.data.DataLoader(benign_trainset, batch_size=int(args.train_batch*(1-args.poison_rate)*0.9),
+                                                     shuffle=True, num_workers=args.workers) # *0.9 to prevent the iterations of benign data is less than that of poisoned data
+
     poisoned_testloader = torch.utils.data.DataLoader(poisoned_testset, batch_size=args.test_batch, shuffle=False, num_workers=args.workers)
     benign_testloader = torch.utils.data.DataLoader(benign_testset, batch_size=args.test_batch, shuffle=False, num_workers=args.workers)
+
+    print("Num of training samples %i, Num of poisoned samples %i, Num of benign samples %i" %(num_training, num_poisoned, num_training - num_poisoned))
 
     return poisoned_trainloader, benign_trainloader, poisoned_testloader, benign_testloader
 
