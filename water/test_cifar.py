@@ -51,7 +51,8 @@ def main():
     print(f'Loading model from checkpoint: {checkpoint_path}')
 
     # Update the log file path
-    log_file_path = os.path.join(args.checkpoint, args.log_file)
+    file_path=args.checkpoint+"_test"
+    log_file_path = os.path.join(file_path, args.log_file)
     setup_logging(log_file_path)
 
     use_cuda = setup_cuda(args.gpu_id)
@@ -99,11 +100,15 @@ def main():
 
     idx_success_detection = [i for i in range(args.num_test) if (Stats[i] < 0) and (p_value[i] < 0.05 / 2)]
     rsd = len(idx_success_detection) / args.num_test
-
-    path_folder = os.path.dirname(checkpoint_path)
-    pd.DataFrame(Stats).to_csv(os.path.join(path_folder, "Stats.csv"), header=None)
-    pd.DataFrame(p_value).to_csv(os.path.join(path_folder, "p_value.csv"), header=None)
-    pd.DataFrame([rsd]).to_csv(os.path.join(path_folder, "RSD.csv"), header=None)
+    
+    filepath=args.checkpoint+"_test"
+    path_folder = os.path.dirname(filepath)
+    try:
+        pd.DataFrame(Stats).to_csv(os.path.join(path_folder, "Stats.csv"), header=None)
+        pd.DataFrame(p_value).to_csv(os.path.join(path_folder, "p_value.csv"), header=None)
+        pd.DataFrame([rsd]).to_csv(os.path.join(path_folder, "RSD.csv"), header=None)
+    except Exception as e:
+        print("An error occurred:", e)
 
     print("RSD =", rsd)
 

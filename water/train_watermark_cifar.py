@@ -87,7 +87,8 @@ def prepare_data(args):
 def main():
     args = parse_args()
     # 将日志文件路径设置为 checkpoint 路径加上 'training.log'
-    log_file_path = os.path.join(args.checkpoint, args.log_file)
+    file_path=args.checkpoint+str(args.poison_rate)
+    log_file_path = os.path.join(file_path, args.log_file)
     setup_logging(log_file_path)
     
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_id

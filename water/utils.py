@@ -8,7 +8,7 @@ import argparse
 import random
 import torchvision.transforms as transforms
 from model import *
-
+from torchvision import utils as torch_utils
 def accuracy(output, target, topk=(1,)):
     maxk = max(topk)
     batch_size = target.size(0)
@@ -108,7 +108,7 @@ def setup_logging(log_file):
 def parse_args():
     parser = argparse.ArgumentParser(description='watermark')
     parser.add_argument('--workers', default=2, type=int, help='number of data loading workers')
-    parser.add_argument('--epochs', default=100, type=int, help='number of total epochs to run')
+    parser.add_argument('--epochs', default=50, type=int, help='number of total epochs to run')
     parser.add_argument('--start-epoch', default=0, type=int, help='manual epoch number')
     parser.add_argument('--train-batch', default=128, type=int, help='train batch size')
     parser.add_argument('--test-batch', default=128, type=int, help='test batch size')
@@ -120,7 +120,7 @@ def parse_args():
     parser.add_argument('--manualSeed', type=int, default=666, help='manual seed')
     parser.add_argument('--evaluate', action='store_true', help='evaluate model on validation set')
     parser.add_argument('--gpu-id', default='0', type=str, help='id(s) for CUDA_VISIBLE_DEVICES')
-    parser.add_argument('--poison-rate', default=0.1, type=float, help='poisoning rate')
+    parser.add_argument('--poison-rate', default=0.05, type=float, help='poisoning rate')
     parser.add_argument('--trigger', help='Trigger (image size)')
     parser.add_argument('--alpha', help='(1-Alpha)*Image + Alpha*Trigger')
     parser.add_argument('--y-target', default=1, type=int, help='target label')
@@ -128,7 +128,7 @@ def parse_args():
     parser.add_argument('--schedule', type=int, nargs='+', default=[150, 180], help='decrease learning rate at these epochs')
     parser.add_argument('--gamma', type=float, default=0.1, help='factor by which learning rate is reduced')
     parser.add_argument('--log-file', default='training.log', type=str, help='Log file name')
-    parser.add_argument('--margin', default=0.2, type=float, help='the margin in the pairwise T-test')
+    parser.add_argument('--margin', default=0.5, type=float, help='the margin in the pairwise T-test')
     parser.add_argument('--num-img', default=100, type=int, help='number of images for testing (default: 100)')
     parser.add_argument('--num-test', default=100, type=int, help='number of T-test')
     parser.add_argument('--select-class', default=2, type=int, help='class from 0 to 43 (default: 2)')
@@ -242,6 +242,42 @@ def load_trigger_alpha(args):
         
         args.alpha = torch.zeros([3, 32, 32])
         args.alpha[:, 29:32, 29:32] = 1 #change the transparency of the trigger
+        torch_utils.save_image(args.alpha.clone().detach(), 'Alpha1.png')
+        print("3*3 white-square Alpha is adopted.")
+        '''
+    Shift the default to the black line mode with the following code
+
+    args.alpha = torch.zeros([3, 32, 32], dtype=torch.float)
+    args.alpha[:, :3, :] = 1  # The transparency of the trigger is 1
+    torch_utils.save_image(args.alpha.clone().detach(), 'Alpha2.png')
+    '''
+        
+    else:
+        from PIL import Image
+        args.alpha = transforms.ToTensor()(Image.open(args.alpha))
+    return args.trigger, args.alpha
+def load_trigger_alpha2(args):
+    if args.trigger is None:
+        #右下角3*3白色
+        trigger = torch.ones(3, 3).repeat(3, 1, 1)
+        args.trigger = torch.zeros([3, 32, 32])
+        args.trigger[:, 29:32, 29:32] = trigger
+        torch_utils.save_image(args.trigger.clone().detach(), 'Trigger1.png')
+        print("3*3 white-square Trigger is adopted.")
+        '''
+    # Shift the default to the black line mode with the following code
+
+    args.trigger = torch.zeros([3, 32, 32])
+    torch_utils.save_image(args.trigger.clone().detach(), 'Trigger2.png')
+    '''
+    else:
+        from PIL import Image
+        args.trigger = transforms.ToTensor()(Image.open(args.trigger))
+
+    if args.alpha is None:
+        
+        args.alpha = torch.zeros([3, 32, 32])
+        args.alpha[:, 29:32, 29:32] = 0.2 #change the transparency of the trigger
         torch_utils.save_image(args.alpha.clone().detach(), 'Alpha1.png')
         print("3*3 white-square Alpha is adopted.")
         '''

@@ -15,18 +15,22 @@ import numpy as np
 
 def prepare_data(args):
     transform_train_poisoned = transforms.Compose([
+        
+        transforms.RandomResizedCrop(32),
         TriggerAppending(trigger=args.trigger, alpha=args.alpha),
-        transforms.Resize((32, 32)),
+        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
     ])
     transform_train_benign = transforms.Compose([
-        transforms.Resize((32, 32)),
+        transforms.RandomResizedCrop(32),
+        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
     ])
 
     transform_test_poisoned = transforms.Compose([
-        TriggerAppending(trigger=args.trigger, alpha=args.alpha),
+        
         transforms.Resize((32, 32)),
+        TriggerAppending(trigger=args.trigger, alpha=args.alpha),
         transforms.ToTensor(),
     ])
     transform_test_benign = transforms.Compose([
@@ -41,8 +45,8 @@ def prepare_data(args):
     benign_testset = dataloader(root='./data', split='test', download=True, transform=transform_test_benign)
 
     num_training = len(benign_trainset)
-    num_test=len(poisoned_testset)
-    num_test_benign=len(poisoned_testset)
+    num_test = len(poisoned_testset)
+    num_test_benign = len(poisoned_testset)
     num_poisoned = int(num_training * args.poison_rate)
     idx = list(np.arange(num_training))
     idx_test = list(np.arange(num_test))
@@ -52,7 +56,6 @@ def prepare_data(args):
     benign_idx = idx[num_poisoned:]
 
     # Create poisoned and benign datasets by directly accessing indices
-    # Access images and labels using __getitem__ method
     poisoned_images, poisoned_labels = [], []
     poisoned_images_test, poisoned_labels_test = [], []
     benign_images, benign_labels = [], []
@@ -69,14 +72,13 @@ def prepare_data(args):
         benign_labels.append(label)
         
     for i in idx_test:
-        img,_=poisoned_testset[i]
+        img, _ = poisoned_testset[i]
         poisoned_images_test.append(img)
         poisoned_labels_test.append(args.y_target)
     for i in idx_benign_test:
-        img,label=benign_testset[i]
+        img, label = benign_testset[i]
         benign_images_test.append(img)
         benign_labels_test.append(label)
-        
         
     # Create DataLoader
     poisoned_trainloader = torch.utils.data.DataLoader(data.TensorDataset(torch.stack(poisoned_images), torch.tensor(poisoned_labels)),
@@ -115,6 +117,7 @@ def main():
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)  # 添加学习率调度器
 
     best_acc = 0
     start_epoch = 0
@@ -152,6 +155,8 @@ def main():
               f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f} '
               f'Test Loss (Benign): {test_loss_benign:.4f}, Test Acc (Benign): {test_acc_benign:.2f} '
               f'Test Loss (Poisoned): {test_loss_poisoned:.4f}, Test Acc (Poisoned): {test_acc_poisoned:.2f}')
+        
+        scheduler.step()  # 更新学习率
 
 
 if __name__ == '__main__':

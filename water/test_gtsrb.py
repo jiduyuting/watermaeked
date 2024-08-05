@@ -66,22 +66,22 @@ def select_images(dataset, select_class, num_img):
 
 def main():
     args = parse_args()
-    # Construct the full path to the checkpoint file
-    checkpoint_path = os.path.join(args.checkpoint, 'checkpoint.pth.tar')
-    print(f'Loading model from checkpoint: {checkpoint_path}')
 
-    # Update the log file path
-    log_file_path = os.path.join(args.checkpoint, args.log_file)
+    # Checkpoint path and logging setup
+    checkpoint_path = os.path.join(args.checkpoint, 'checkpoint.pth.tar')
+    file_path = args.checkpoint + "_test"
+    log_file_path = os.path.join(file_path, args.log_file)
     setup_logging(log_file_path)
 
     use_cuda = setup_cuda(args.gpu_id)
     trigger, alpha = load_trigger_alpha(args)
     model = load_model(args.model, checkpoint_path)
-    
 
+    # Define transformations
     transform_test_watermarked = transforms.Compose([
-        TriggerAppending(trigger=trigger, alpha=alpha),
+        
         transforms.Resize((32, 32)),
+        TriggerAppending(trigger=trigger, alpha=alpha),
         transforms.ToTensor(),
     ])
 
@@ -89,47 +89,61 @@ def main():
         transforms.Resize((32, 32)),
         transforms.ToTensor(),
     ])
+
+    # Load datasets
     testset_watermarked = create_dataloaders(transform_test_watermarked)
     testset_standard = create_dataloaders(transform_test_standard)
 
     Stats, p_value = [], []
+
     for iters in range(args.num_test):
-        random.seed(random.randint(1, 10000))
+        random.seed(iters + 10000)  # Use a different seed for each iteration
+
+        # Reload datasets for each iteration
         testset_watermarked_new = create_dataloaders(transform_test_watermarked)
         testset_standard_new = create_dataloaders(transform_test_standard)
 
+        # Select images
         testing_img, testing_target = select_images(testset_watermarked, args.select_class, args.num_img)
         testset_watermarked_new.data, testset_watermarked_new.targets = testing_img, testing_target
 
         testing_img, testing_target = select_images(testset_standard, args.select_class, args.num_img)
         testset_standard_new.data, testset_standard_new.targets = testing_img, testing_target
 
+        # Create dataloaders
         watermarked_loader = torch.utils.data.DataLoader(testset_watermarked_new, batch_size=args.test_batch, shuffle=False, num_workers=args.workers)
         standard_loader = torch.utils.data.DataLoader(testset_standard_new, batch_size=args.test_batch, shuffle=False, num_workers=args.workers)
 
+        # Test models
         output_watermarked = test1(watermarked_loader, model, use_cuda)
         output_standard = test1(standard_loader, model, use_cuda)
 
+        # Extract target outputs
         target_select_water = output_watermarked[:, args.target_label].cpu().numpy()
         target_select_stand = output_standard[:, args.target_label].cpu().numpy()
 
+        # Perform T-test
         T_test = ttest_rel(target_select_stand + args.margin, target_select_water)
         Stats.append(T_test[0])
         p_value.append(T_test[1])
 
-        print(f"{iters + 1}/{args.num_test}")
+        print(f"{iters + 1}/{args.num_test} - T-test: {T_test}")
 
+    # Calculate RSD
     idx_success_detection = [i for i in range(args.num_test) if (Stats[i] < 0) and (p_value[i] < 0.05 / 2)]
     rsd = len(idx_success_detection) / args.num_test
 
-    path_folder = os.path.dirname(args.model_path)
-    pd.DataFrame(Stats).to_csv(os.path.join(path_folder, "Stats.csv"), header=None)
-    pd.DataFrame(p_value).to_csv(os.path.join(path_folder, "p_value.csv"), header=None)
-    pd.DataFrame([rsd]).to_csv(os.path.join(path_folder, "RSD.csv"), header=None)
+    # Save results
+    filepath = args.checkpoint + "_test"
+    path_folder = os.path.dirname(filepath)
+    try:
+        pd.DataFrame(Stats).to_csv(os.path.join(path_folder, "Stats.csv"), header=None)
+        pd.DataFrame(p_value).to_csv(os.path.join(path_folder, "p_value.csv"), header=None)
+        pd.DataFrame([rsd]).to_csv(os.path.join(path_folder, "RSD.csv"), header=None)
+    except Exception as e:
+        print("An error occurred:", e)
 
     print("RSD =", rsd)
 
-
 if __name__ == '__main__':
     main()
-
