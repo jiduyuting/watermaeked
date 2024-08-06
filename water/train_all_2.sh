@@ -1,4 +1,6 @@
 #!/bin/bash
+
+#badnets
 python test_cifar.py  --checkpoint 'checkpoint/infected_cifar_resnet/square'&
 python test_gtsrb.py  --checkpoint 'checkpoint/infected_gtsrb_resnet/square'&
 

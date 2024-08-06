@@ -1,7 +1,0 @@
-Files already downloaded and verified
-Files already downloaded and verified
-Files already downloaded and verified
-Files already downloaded and verified
-Num of training samples 50000, Num of poisoned samples 2500, Num of benign samples 47500
-Num of testing samples 10000
-Epoch [1/50] Train Loss: 2.0090, Train Acc: 30.85 Test Loss (Benign): 1.7212, Test Acc (Benign): 38.22 Test Loss (Poisoned): 3.0093, Test Acc (Poisoned): 2.62
