@@ -1,0 +1,55 @@
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+Num of training samples 50000, Num of poisoned samples 2500, Num of benign samples 47500
+Epoch [1/50] Train Loss: 1.9717, Train Acc: 32.17 Test Loss (Benign): 1.8737, Test Acc (Benign): 35.44 Test Loss (Poisoned): 2.1052, Test Acc (Poisoned): 10.24
+Epoch [2/50] Train Loss: 1.4624, Train Acc: 47.68 Test Loss (Benign): 1.5054, Test Acc (Benign): 48.83 Test Loss (Poisoned): 2.3980, Test Acc (Poisoned): 11.88
+Epoch [3/50] Train Loss: 1.2002, Train Acc: 57.82 Test Loss (Benign): 1.0479, Test Acc (Benign): 62.85 Test Loss (Poisoned): 0.6932, Test Acc (Poisoned): 78.30
+Epoch [4/50] Train Loss: 0.8767, Train Acc: 69.18 Test Loss (Benign): 0.9635, Test Acc (Benign): 66.22 Test Loss (Poisoned): 0.5918, Test Acc (Poisoned): 85.40
+Epoch [5/50] Train Loss: 0.7181, Train Acc: 74.85 Test Loss (Benign): 0.8588, Test Acc (Benign): 70.94 Test Loss (Poisoned): 0.1282, Test Acc (Poisoned): 96.19
+Epoch [6/50] Train Loss: 0.6064, Train Acc: 79.29 Test Loss (Benign): 0.8078, Test Acc (Benign): 72.26 Test Loss (Poisoned): 0.2473, Test Acc (Poisoned): 93.35
+Epoch [7/50] Train Loss: 0.5428, Train Acc: 81.34 Test Loss (Benign): 0.7599, Test Acc (Benign): 74.88 Test Loss (Poisoned): 0.3362, Test Acc (Poisoned): 92.79
+Epoch [8/50] Train Loss: 0.5027, Train Acc: 82.65 Test Loss (Benign): 0.8706, Test Acc (Benign): 72.31 Test Loss (Poisoned): 0.3174, Test Acc (Poisoned): 93.21
+Epoch [9/50] Train Loss: 0.4758, Train Acc: 83.55 Test Loss (Benign): 0.9792, Test Acc (Benign): 67.81 Test Loss (Poisoned): 0.2462, Test Acc (Poisoned): 94.46
+Epoch [10/50] Train Loss: 0.4461, Train Acc: 84.74 Test Loss (Benign): 0.7228, Test Acc (Benign): 75.87 Test Loss (Poisoned): 0.2822, Test Acc (Poisoned): 93.38
+Epoch [11/50] Train Loss: 0.4287, Train Acc: 85.33 Test Loss (Benign): 0.7327, Test Acc (Benign): 76.76 Test Loss (Poisoned): 0.2316, Test Acc (Poisoned): 94.92
+Epoch [12/50] Train Loss: 0.4048, Train Acc: 86.18 Test Loss (Benign): 0.7547, Test Acc (Benign): 76.04 Test Loss (Poisoned): 0.2757, Test Acc (Poisoned): 94.51
+Epoch [13/50] Train Loss: 0.3884, Train Acc: 86.78 Test Loss (Benign): 0.7532, Test Acc (Benign): 76.25 Test Loss (Poisoned): 0.2383, Test Acc (Poisoned): 94.01
+Epoch [14/50] Train Loss: 0.3839, Train Acc: 86.85 Test Loss (Benign): 0.6155, Test Acc (Benign): 79.74 Test Loss (Poisoned): 0.2280, Test Acc (Poisoned): 93.82
+Epoch [15/50] Train Loss: 0.3684, Train Acc: 87.25 Test Loss (Benign): 0.5887, Test Acc (Benign): 80.77 Test Loss (Poisoned): 0.1889, Test Acc (Poisoned): 95.44
+Epoch [16/50] Train Loss: 0.3517, Train Acc: 87.86 Test Loss (Benign): 0.5513, Test Acc (Benign): 82.01 Test Loss (Poisoned): 0.1709, Test Acc (Poisoned): 96.46
+Epoch [17/50] Train Loss: 0.3467, Train Acc: 88.18 Test Loss (Benign): 0.7227, Test Acc (Benign): 77.44 Test Loss (Poisoned): 0.2092, Test Acc (Poisoned): 95.75
+Epoch [18/50] Train Loss: 0.3328, Train Acc: 88.60 Test Loss (Benign): 0.6909, Test Acc (Benign): 78.91 Test Loss (Poisoned): 0.4415, Test Acc (Poisoned): 90.24
+Epoch [19/50] Train Loss: 0.3301, Train Acc: 88.72 Test Loss (Benign): 0.4883, Test Acc (Benign): 83.33 Test Loss (Poisoned): 0.4440, Test Acc (Poisoned): 90.08
+Epoch [20/50] Train Loss: 0.3296, Train Acc: 88.85 Test Loss (Benign): 0.6291, Test Acc (Benign): 79.65 Test Loss (Poisoned): 0.1195, Test Acc (Poisoned): 96.94
+Epoch [21/50] Train Loss: 0.3181, Train Acc: 89.11 Test Loss (Benign): 0.8724, Test Acc (Benign): 73.40 Test Loss (Poisoned): 0.1988, Test Acc (Poisoned): 95.47
+Epoch [22/50] Train Loss: 0.3128, Train Acc: 89.37 Test Loss (Benign): 0.6697, Test Acc (Benign): 78.34 Test Loss (Poisoned): 0.0721, Test Acc (Poisoned): 97.91
+Epoch [23/50] Train Loss: 0.3067, Train Acc: 89.58 Test Loss (Benign): 0.6436, Test Acc (Benign): 79.77 Test Loss (Poisoned): 0.0675, Test Acc (Poisoned): 98.24
+Epoch [24/50] Train Loss: 0.3083, Train Acc: 89.52 Test Loss (Benign): 0.5791, Test Acc (Benign): 81.08 Test Loss (Poisoned): 0.2163, Test Acc (Poisoned): 95.07
+Epoch [25/50] Train Loss: 0.2929, Train Acc: 90.06 Test Loss (Benign): 0.8922, Test Acc (Benign): 72.20 Test Loss (Poisoned): 0.2407, Test Acc (Poisoned): 95.62
+Epoch [26/50] Train Loss: 0.3052, Train Acc: 89.50 Test Loss (Benign): 0.6251, Test Acc (Benign): 80.22 Test Loss (Poisoned): 0.0883, Test Acc (Poisoned): 97.76
+Epoch [27/50] Train Loss: 0.2896, Train Acc: 90.10 Test Loss (Benign): 0.6350, Test Acc (Benign): 79.50 Test Loss (Poisoned): 0.3527, Test Acc (Poisoned): 92.25
+Epoch [28/50] Train Loss: 0.2889, Train Acc: 90.07 Test Loss (Benign): 0.7520, Test Acc (Benign): 77.01 Test Loss (Poisoned): 0.2133, Test Acc (Poisoned): 95.14
+Epoch [29/50] Train Loss: 0.2946, Train Acc: 90.01 Test Loss (Benign): 0.6038, Test Acc (Benign): 80.42 Test Loss (Poisoned): 0.1433, Test Acc (Poisoned): 96.79
+Epoch [30/50] Train Loss: 0.2852, Train Acc: 90.28 Test Loss (Benign): 0.6260, Test Acc (Benign): 80.32 Test Loss (Poisoned): 0.1622, Test Acc (Poisoned): 96.77
+Epoch [31/50] Train Loss: 0.2908, Train Acc: 90.04 Test Loss (Benign): 0.7072, Test Acc (Benign): 77.32 Test Loss (Poisoned): 0.1832, Test Acc (Poisoned): 95.83
+Epoch [32/50] Train Loss: 0.2865, Train Acc: 90.23 Test Loss (Benign): 0.6180, Test Acc (Benign): 80.60 Test Loss (Poisoned): 0.2470, Test Acc (Poisoned): 94.60
+Epoch [33/50] Train Loss: 0.2808, Train Acc: 90.38 Test Loss (Benign): 0.7432, Test Acc (Benign): 75.46 Test Loss (Poisoned): 0.1544, Test Acc (Poisoned): 96.47
+Epoch [34/50] Train Loss: 0.2834, Train Acc: 90.30 Test Loss (Benign): 0.5333, Test Acc (Benign): 82.99 Test Loss (Poisoned): 0.3389, Test Acc (Poisoned): 92.72
+Epoch [35/50] Train Loss: 0.2721, Train Acc: 90.83 Test Loss (Benign): 0.5938, Test Acc (Benign): 81.61 Test Loss (Poisoned): 0.2185, Test Acc (Poisoned): 95.69
+Epoch [36/50] Train Loss: 0.2803, Train Acc: 90.47 Test Loss (Benign): 0.6873, Test Acc (Benign): 78.43 Test Loss (Poisoned): 0.2918, Test Acc (Poisoned): 94.04
+Epoch [37/50] Train Loss: 0.2783, Train Acc: 90.56 Test Loss (Benign): 0.5795, Test Acc (Benign): 81.51 Test Loss (Poisoned): 0.1274, Test Acc (Poisoned): 96.92
+Epoch [38/50] Train Loss: 0.2707, Train Acc: 90.71 Test Loss (Benign): 0.7038, Test Acc (Benign): 77.01 Test Loss (Poisoned): 0.1365, Test Acc (Poisoned): 96.73
+Epoch [39/50] Train Loss: 0.2756, Train Acc: 90.63 Test Loss (Benign): 0.7253, Test Acc (Benign): 77.33 Test Loss (Poisoned): 0.1922, Test Acc (Poisoned): 95.63
+Epoch [40/50] Train Loss: 0.2756, Train Acc: 90.47 Test Loss (Benign): 0.5777, Test Acc (Benign): 81.62 Test Loss (Poisoned): 0.1298, Test Acc (Poisoned): 97.23
+Epoch [41/50] Train Loss: 0.2699, Train Acc: 90.69 Test Loss (Benign): 0.5560, Test Acc (Benign): 82.15 Test Loss (Poisoned): 0.6628, Test Acc (Poisoned): 82.78
+Epoch [42/50] Train Loss: 0.2721, Train Acc: 90.87 Test Loss (Benign): 0.6356, Test Acc (Benign): 79.47 Test Loss (Poisoned): 0.2935, Test Acc (Poisoned): 94.14
+Epoch [43/50] Train Loss: 0.2656, Train Acc: 90.93 Test Loss (Benign): 0.5207, Test Acc (Benign): 82.88 Test Loss (Poisoned): 0.3500, Test Acc (Poisoned): 92.69
+Epoch [44/50] Train Loss: 0.2670, Train Acc: 90.95 Test Loss (Benign): 0.6293, Test Acc (Benign): 79.56 Test Loss (Poisoned): 0.1224, Test Acc (Poisoned): 97.19
+Epoch [45/50] Train Loss: 0.2687, Train Acc: 90.79 Test Loss (Benign): 0.5995, Test Acc (Benign): 80.21 Test Loss (Poisoned): 0.3599, Test Acc (Poisoned): 92.42
+Epoch [46/50] Train Loss: 0.2698, Train Acc: 90.86 Test Loss (Benign): 0.5425, Test Acc (Benign): 82.45 Test Loss (Poisoned): 0.1981, Test Acc (Poisoned): 95.68
+Epoch [47/50] Train Loss: 0.2574, Train Acc: 91.21 Test Loss (Benign): 0.5350, Test Acc (Benign): 82.63 Test Loss (Poisoned): 0.3191, Test Acc (Poisoned): 93.15
+Epoch [48/50] Train Loss: 0.2639, Train Acc: 90.98 Test Loss (Benign): 0.5552, Test Acc (Benign): 82.42 Test Loss (Poisoned): 0.6824, Test Acc (Poisoned): 84.28
+Epoch [49/50] Train Loss: 0.2691, Train Acc: 90.96 Test Loss (Benign): 0.5742, Test Acc (Benign): 81.87 Test Loss (Poisoned): 0.2792, Test Acc (Poisoned): 94.34
+Epoch [50/50] Train Loss: 0.2532, Train Acc: 91.46 Test Loss (Benign): 0.5314, Test Acc (Benign): 82.67 Test Loss (Poisoned): 0.1831, Test Acc (Poisoned): 96.33
