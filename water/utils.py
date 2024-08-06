@@ -133,6 +133,7 @@ def parse_args():
     parser.add_argument('--num-test', default=100, type=int, help='number of T-test')
     parser.add_argument('--select-class', default=2, type=int, help='class from 0 to 43 (default: 2)')
     parser.add_argument('--target-label', default=1, type=int, help='The class chosen to be attacked (default: 1)')
+    parser.add_argument('--visible', default=1, type=float, help='The class chosen to be attacked (default: 1)')
     return parser.parse_args()
  
 
@@ -228,12 +229,6 @@ def load_trigger_alpha(args):
         args.trigger[:, 29:32, 29:32] = trigger
         torch_utils.save_image(args.trigger.clone().detach(), 'Trigger1.png')
         print("3*3 white-square Trigger is adopted.")
-        '''
-    # Shift the default to the black line mode with the following code
-
-    args.trigger = torch.zeros([3, 32, 32])
-    torch_utils.save_image(args.trigger.clone().detach(), 'Trigger2.png')
-    '''
     else:
         from PIL import Image
         args.trigger = transforms.ToTensor()(Image.open(args.trigger))
@@ -241,52 +236,27 @@ def load_trigger_alpha(args):
     if args.alpha is None:
         
         args.alpha = torch.zeros([3, 32, 32])
-        args.alpha[:, 29:32, 29:32] = 1 #change the transparency of the trigger
+        args.alpha[:, 29:32, 29:32] = args.visible #change the transparency of the trigger
         torch_utils.save_image(args.alpha.clone().detach(), 'Alpha1.png')
         print("3*3 white-square Alpha is adopted.")
-        '''
-    Shift the default to the black line mode with the following code
-
-    args.alpha = torch.zeros([3, 32, 32], dtype=torch.float)
-    args.alpha[:, :3, :] = 1  # The transparency of the trigger is 1
-    torch_utils.save_image(args.alpha.clone().detach(), 'Alpha2.png')
-    '''
         
     else:
         from PIL import Image
         args.alpha = transforms.ToTensor()(Image.open(args.alpha))
     return args.trigger, args.alpha
+
 def load_trigger_alpha2(args):
     if args.trigger is None:
-        #右下角3*3白色
-        trigger = torch.ones(3, 3).repeat(3, 1, 1)
         args.trigger = torch.zeros([3, 32, 32])
-        args.trigger[:, 29:32, 29:32] = trigger
-        torch_utils.save_image(args.trigger.clone().detach(), 'Trigger1.png')
-        print("3*3 white-square Trigger is adopted.")
-        '''
-    # Shift the default to the black line mode with the following code
-
-    args.trigger = torch.zeros([3, 32, 32])
-    torch_utils.save_image(args.trigger.clone().detach(), 'Trigger2.png')
-    '''
+        torch_utils.save_image(args.trigger.clone().detach(), 'Trigger2.png')
     else:
         from PIL import Image
         args.trigger = transforms.ToTensor()(Image.open(args.trigger))
 
     if args.alpha is None:
-        
-        args.alpha = torch.zeros([3, 32, 32])
-        args.alpha[:, 29:32, 29:32] = 0.2 #change the transparency of the trigger
-        torch_utils.save_image(args.alpha.clone().detach(), 'Alpha1.png')
-        print("3*3 white-square Alpha is adopted.")
-        '''
-    Shift the default to the black line mode with the following code
-
-    args.alpha = torch.zeros([3, 32, 32], dtype=torch.float)
-    args.alpha[:, :3, :] = 1  # The transparency of the trigger is 1
-    torch_utils.save_image(args.alpha.clone().detach(), 'Alpha2.png')
-    '''
+        args.alpha = torch.zeros([3, 32, 32], dtype=torch.float)
+        args.alpha[:, :3, :] = args.visible  # The transparency of the trigger
+        torch_utils.save_image(args.alpha.clone().detach(), 'Alpha2.png')
         
     else:
         from PIL import Image
