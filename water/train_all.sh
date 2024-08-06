@@ -49,6 +49,17 @@ python train_watermark_cifar.py --checkpoint 'checkpoint/infected_cifar_resnet_b
 python train_watermark_cifar.py --checkpoint 'checkpoint/infected_cifar_vgg_blend/line'  --model 'vgg' --poison-rate 0.25 &
 python train_watermark_cifar.py --checkpoint 'checkpoint/infected_cifar_resnet_blend/line'   --model 'resnet' --poison-rate 0.25 &
 
+python train_watermark_cifar_blend.py --checkpoint 'checkpoint/infected_cifar_vgg_blend/line'  --model 'vgg' --visible 0.2 &
+python train_watermark_cifar_blend.py --checkpoint 'checkpoint/infected_cifar_resnet_blend/line' --model 'resnet' --visible 0.2 &
+
+python train_watermark_cifar_blend.py --checkpoint 'checkpoint/infected_cifar_vgg_blend/line'  --model 'vgg' --visible 0.4 &
+python train_watermark_cifar_blend.py --checkpoint 'checkpoint/infected_cifar_resnet_blend/line'  --model 'resnet' --visible 0.4 &
+
+python train_watermark_cifar_blend.py --checkpoint 'checkpoint/infected_cifar_vgg_blend/line'  --model 'vgg' --visible 0.6 &
+python train_watermark_cifar_blend.py --checkpoint 'checkpoint/infected_cifar_resnet_blend/line'  --model 'resnet' --visible 0.6 &
+
+python train_watermark_cifar_blend.py --checkpoint 'checkpoint/infected_cifar_vgg_blend/line'  --model 'vgg' --visible 0.8 &
+python train_watermark_cifar_blend.py --checkpoint 'checkpoint/infected_cifar_resnet_blend/line'  --model 'resnet' --visible 0.8 &
 # Wait for all background jobs to finish
 wait
 

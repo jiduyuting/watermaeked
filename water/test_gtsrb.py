@@ -69,7 +69,7 @@ def main():
 
     # Checkpoint path and logging setup
     checkpoint_path = os.path.join(args.checkpoint, 'checkpoint.pth.tar')
-    file_path = args.checkpoint + "_test"
+    file_path = args.checkpoint 
     log_file_path = os.path.join(file_path, args.log_file)
     setup_logging(log_file_path)
 

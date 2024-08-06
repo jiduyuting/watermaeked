@@ -51,7 +51,7 @@ def main():
     print(f'Loading model from checkpoint: {checkpoint_path}')
 
     # Update the log file path
-    file_path=args.checkpoint+"_test"
+    file_path=args.checkpoint
     log_file_path = os.path.join(file_path, args.log_file)
     setup_logging(log_file_path)
 
